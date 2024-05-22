@@ -55,6 +55,7 @@ class MlT:
         return {'loss': -self.puntuacion, 'status': STATUS_OK }
     
     def hyper_opt(self,iter):
+        """Funcion que llama a objective y va optimizando"""
         trials = Trials()
         best_hyperparams = fmin(fn = self.objective,
                         space = self.space,
@@ -64,12 +65,14 @@ class MlT:
         return best_hyperparams
 
     def std(self):
+        """Para standarizar"""
         from sklearn.preprocessing import StandardScaler
         std = StandardScaler()
         self.X_train = std.fit_transform(self.X_train)
         self.X_test = std.transform(self.X_test)
 
     def bparams(self,tipo,scorer,avg):
+        """Para definir parametros y en caso normal ya elige solo"""
         self.tipo = tipo
         if scorer : self.scorer = scorer
         elif tipo == 'c' : self.scorer = 'f1_score' 
@@ -93,20 +96,21 @@ class XGBs(MlT):
                       'learning_rate': hp.uniform('learning_rate',0.001,1),
                       'subsample': hp.uniform('subsample',0,1),
                       'reg_lambda': hp.quniform('reg_lambda',0,20,1),
-                      'reg_alpha': hp.quniform('reg_alpha',0,20,1),}
+                      'reg_alpha': hp.quniform('reg_alpha',0,20,1),
+                      'seed': hp.quniform('seed',0,50,1)}
         if self.tipo == 'c':
-            self.string = "self.model = xgboost.XGBClassifier(n_estimators=int(space['n_estimators']),max_depth=int(space['max_depth']),learning_rate=space['learning_rate'],subsample=space['subsample'],reg_alpha= int(space['reg_alpha']),reg_lambda=int(space['reg_lambda']))"
+            self.string = "self.model = xgboost.XGBClassifier(n_estimators=int(space['n_estimators']),max_depth=int(space['max_depth']),learning_rate=space['learning_rate'],subsample=space['subsample'],reg_alpha= int(space['reg_alpha']),reg_lambda=int(space['reg_lambda']),seed=int(space['seed']))"
         else:
-            self.string = "self.model = xgboost.XGBRegressor(n_estimators=int(space['n_estimators']),max_depth=int(space['max_depth']),learning_rate=space['learning_rate'],subsample=space['subsample'],reg_alpha= int(space['reg_alpha']),reg_lambda=int(space['reg_lambda']))"
+            self.string = "self.model = xgboost.XGBRegressor(n_estimators=int(space['n_estimators']),max_depth=int(space['max_depth']),learning_rate=space['learning_rate'],subsample=space['subsample'],reg_alpha= int(space['reg_alpha']),reg_lambda=int(space['reg_lambda']),seed=int(space['seed']))"
         
         #hyperopt
         best_hyperparams = self.hyper_opt(iter)
 
         #Fittenado y printeando modelo con los mejores parametros
         if self.tipo == 'c':
-            xgb = xgboost.XGBClassifier(n_estimators=int(best_hyperparams['n_estimators']),max_depth=int(best_hyperparams['max_depth']),learning_rate=best_hyperparams['learning_rate'],subsample=best_hyperparams['subsample'])
+            xgb = xgboost.XGBClassifier(n_estimators=int(best_hyperparams['n_estimators']),max_depth=int(best_hyperparams['max_depth']),learning_rate=best_hyperparams['learning_rate'],subsample=best_hyperparams['subsample'],seed=int(best_hyperparams['seed']))
         else:
-            xgb = xgboost.XGBRegressor(n_estimators=int(best_hyperparams['n_estimators']),max_depth=int(best_hyperparams['max_depth']),learning_rate=best_hyperparams['learning_rate'],subsample=best_hyperparams['subsample'])
+            xgb = xgboost.XGBRegressor(n_estimators=int(best_hyperparams['n_estimators']),max_depth=int(best_hyperparams['max_depth']),learning_rate=best_hyperparams['learning_rate'],subsample=best_hyperparams['subsample'],seed=int(best_hyperparams['seed']))
         xgb.fit(self.X_train,self.y_train)
         y_pred = xgb.predict(self.X_test)
         self.metricas(self.y_test,y_pred)
