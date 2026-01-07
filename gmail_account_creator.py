@@ -30,7 +30,7 @@ def keys_sender(element,string):
 	"""Para simular humanidad al introducir datos."""
 	for letter in str(string):
 		element.send_keys(letter)
-		time.sleep(random.randint(1,2)/10)
+		time.sleep(random.randint(1,4)/10)
 
 def gmail_account_creator(first_name,last_name):
 	"""Crea cuentas en gmail.Anadir proxies luego."""
@@ -48,7 +48,7 @@ def gmail_account_creator(first_name,last_name):
 		return 'bad'
 	#seteando lenguaje e introduciendo nombres
 	try:
-		language_e = wait.until(ec.visibility_of_element_located((By.XPATH,'//span[@id="i2"]')))
+		language_e = wait.until(ec.visibility_of_element_located((By.XPATH,'//span[@id="i3"]')))
 		if language_e.text != 'English (United States)':
 			driver.find_element(By.XPATH,'//span[@role="listbox"]/..').click()
 			time.sleep(1)
@@ -71,42 +71,42 @@ def gmail_account_creator(first_name,last_name):
 	#cumple
 	#month
 	try:
-		wait.until(ec.visibility_of_element_located((By.XPATH,'//select[@id="month"]'))).send_keys('s')
+		day_e = wait.until(ec.visibility_of_element_located((By.XPATH,'//input[@id="day"]')))
 	except TimeoutException:
 		print('Algo fue mal al cargar el cumple')
 		errors_screenshoter(driver)
 		driver.quit()
 		return 'bad'
+	driver.find_element(By.XPATH,'//div[@id="month"]//div[@role="combobox"]').send_keys(Keys.SPACE)
 	time.sleep(1)
-	wait.until(ec.element_to_be_clickable((By.XPATH,f'//option[@value={random.randint(1,12)}]'))).click()
+	wait.until(ec.element_to_be_clickable((By.XPATH,f'//ul[@aria-label="Month"]/li[@data-value={random.randint(1,12)}]'))).click()
 	#day
-	day_e = driver.find_element(By.XPATH,'//input[@id="day"]')
 	keys_sender(day_e,random.randint(1,28))
 	#year 
 	year_e = driver.find_element(By.XPATH,'//input[@id="year"]')
 	keys_sender(year_e,random.randint(1975,2005))
 	#genre
-	gender = wait.until(ec.element_to_be_clickable((By.XPATH,f'//select[@id="gender"]//option[@value={random.randint(1,3)}]')))
-	gender.click()
-	for x in range(1,random.randint(1,2)):
-		year_e.send_keys(Keys.ARROW_RIGHT)
+	driver.find_element(By.XPATH,'//div[@id="gender"]//div[@role="combobox"]').send_keys(Keys.SPACE)
+	time.sleep(1)
+	wait.until(ec.element_to_be_clickable((By.XPATH,f'//ul[@aria-label="Gender"]/li[@data-value={random.randint(1,3)}]'))).click()
+	
 	#boton next
 	wait.until(ec.element_to_be_clickable((By.XPATH,'//span[text()="Next"]/..'))).click()
 	
 	#seleccion de gmail
 	#esto hay que mejorarlo si a futuro da errores de no sugerir correo, hacerlo uno mismo
 	try:
-		wait.until(ec.visibility_of_element_located((By.XPATH,'//div[@role="radio"]')))
+		wait.until(ec.visibility_of_element_located((By.XPATH,'//input[@type="radio"]/..')))
 	except TimeoutException:
 		print('Algo fue mal al cargar la seleccion del gmail')
 		errors_screenshoter(driver)
 		driver.quit()
 		return 'bad'
-	radio_e = driver.find_elements(By.XPATH,'//div[@role="radio"]')[0]
-	radio_e.send_keys(Keys.TAB)
+	radio_e = driver.find_elements(By.XPATH,'//input[@type="radio"]')[0]
 	time.sleep(0.5)
 	radio_e.send_keys(Keys.SPACE)
-	gmail= driver.find_elements(By.XPATH,'//div[@role="radio"]/../../div[2]/div[1]')[0].text
+	gmail= radio_e.get_attribute('value') + '@gmail.com'
+	print(gmail)
 	#next button
 	wait.until(ec.element_to_be_clickable((By.XPATH,'//button/span[text()="Next"]'))).click()
 	
@@ -128,8 +128,9 @@ def gmail_account_creator(first_name,last_name):
 	wait.until(ec.element_to_be_clickable((By.XPATH,'//span[text()="Next"]/..'))).click()
 	# partes finales de aceptar terminos y pinga
 	time.sleep(2)
-	driver.quit()
-	return gmail,password
+	breakpoint()
+	#driver.quit()
+	#return gmail,password
 	
 
 if __name__ == '__main__':
