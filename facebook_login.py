@@ -1,13 +1,20 @@
 """Script para automatizar el login en facebook mediante email y password.Se le puede pasar cookies.
 Mas adelante se le agregara la parte de loguearse en gmail para verificar correo."""
 
-from seleniumbase import Driver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
 from datetime import datetime as dt
 import json,time,random,os
+while 1:
+    try:
+        from seleniumbase import Driver
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as ec
+        from selenium.webdriver.common.by import By
+        from selenium.common.exceptions import TimeoutException
+        break
+    except:
+        os.system('pip install selenium')
+        os.system('pip install seleniumbase')
+
 
 def errors_screenshoter(driver):
 	"""Para guardar un screenshot del punto donde dio un error."""
@@ -85,6 +92,7 @@ def login_face(email,password):
 
 if __name__ == '__main__':
     driver = login_face('nelly550ruiz@gmail.com','Leon.990423')
+    driver.quit()
 
     
 

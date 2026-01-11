@@ -4,12 +4,19 @@ A futuro se anadira la opcion de proxies para escalar el programa."""
 import time,random,os
 from string import ascii_lowercase,ascii_uppercase
 from datetime import datetime as dt
-from seleniumbase import Driver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.keys import Keys
+
+while 1:
+	try:
+		from seleniumbase import Driver
+		from selenium.webdriver.support.ui import WebDriverWait
+		from selenium.webdriver.support import expected_conditions as ec
+		from selenium.webdriver.common.by import By
+		from selenium.common.exceptions import TimeoutException 
+		from selenium.webdriver.common.keys import Keys
+		break
+	except:
+		os.system('pip install selenium')
+		os.system('pip install seleniumbase')
 
 def errors_screenshoter(driver):
 	"""Para guardar un screenshot del punto donde dio un error."""
