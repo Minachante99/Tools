@@ -1,4 +1,4 @@
-"""Un script para logearse en gmail, directamente en el correo y devuelve el driver para continuar."""
+"""Un script para logearse en gmail, directamente en el correo y devuelve el driver para continuar.Hay que pasarle el driver."""
 
 import os,time,random
 from datetime import datetime as dt
@@ -32,12 +32,9 @@ def keys_sender(element,key):
 		time.sleep(random.randint(1,5)/10)
 
 
-def gmail_login(gmail,password):
+def gmail_login(gmail,password,driver,wait):
 	"""Para loguearse en gmail."""
-	#creando driver y wait, accediendo a la web de logeo
-	driver = Driver(uc=True)
-	driver.maximize_window()
-	wait = WebDriverWait(driver,15)
+	#accediendo a la web de logeo
 	driver.get(r'https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fmail.google.com%2Fmail%2Fu%2F0%2F&ddm=0&emr=1&flowEntry=ServiceLogin&flowName=GlifWebSignIn&followup=https%3A%2F%2Fmail.google.com%2Fmail%2Fu%2F0%2F&ifkv=AS5LTARRlWmVYagolRbMTU85GPNIbetL3Z1N1YyzjLEWwqhmCzn3UnpsJNL_wt8szcjn2EaS0Nh1Gw&osid=1&passive=1209600&service=mail&dsh=S739510538%3A1717551485902084')
 	
 	#gmail user
@@ -72,5 +69,8 @@ def gmail_login(gmail,password):
 
 
 if __name__ == '__main__':
-	driver = gmail_login('jessi550ruiz@gmail.com','jessi.9904')
+	driver = Driver(uc=True)
+	driver.maximize_window()
+	wait = WebDriverWait(driver,15)
+	driver = gmail_login('jessi550ruiz@gmail.com','jessi.9904',driver,wait)
 	driver.quit()

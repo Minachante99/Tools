@@ -39,12 +39,9 @@ def keys_sender(element,string):
 		element.send_keys(letter)
 		time.sleep(random.randint(1,4)/10)
 
-def gmail_account_creator(first_name,last_name):
+def gmail_account_creator(first_name,last_name,driver,wait):
 	"""Crea cuentas en gmail.Anadir proxies luego."""
 	#setenado variables y testeando la pagina
-	driver = Driver(uc=True)
-	wait = WebDriverWait(driver,15)
-	driver.maximize_window()
 	try:
 		driver.get(r'https://accounts.google.com/signup')#direccion
 	except TimeoutException:
@@ -142,4 +139,7 @@ def gmail_account_creator(first_name,last_name):
 
 if __name__ == '__main__':
 	#testing
-	gmail_account_creator('Federico de la Concepcion','Garcia Jimenez')
+	driver = Driver(uc=True)
+	wait = WebDriverWait(driver,15)
+	driver.maximize_window()
+	gmail_account_creator('Federico de la Concepcion','Garcia Jimenez',driver,wait)

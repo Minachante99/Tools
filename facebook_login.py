@@ -1,4 +1,4 @@
-"""Script para automatizar el login en facebook mediante email y password.Se le puede pasar cookies.
+"""Script para automatizar el login en facebook mediante email y password.Busca si hay cookies. Hay que pasarle el driver ahora.
 Mas adelante se le agregara la parte de loguearse en gmail para verificar correo."""
 
 from datetime import datetime as dt
@@ -68,12 +68,8 @@ def manual_login(email,password,driver,wait):
     
     return driver
 
-def login_face(email,password):
+def login_face(email,password,driver,wait):
     """Funcion inicial que intenta loguearse con cookies, si falla llama al manual."""
-    #starting chrome
-    driver = Driver(uc=True)
-    wait = WebDriverWait(driver,10)
-    driver.maximize_window()
     #buscando cookies primero
     try:
         driver.get('https://facebook.com/robots.txt')
@@ -91,7 +87,9 @@ def login_face(email,password):
     return driver
 
 if __name__ == '__main__':
-    driver = login_face('nelly550ruiz@gmail.com','Leon.990423')
+    driver = Driver(uc=True)
+    wait = WebDriverWait(driver,10)
+    driver = login_face('nelly550ruiz@gmail.com','Leon.990423',driver,wait)
     driver.quit()
 
     
