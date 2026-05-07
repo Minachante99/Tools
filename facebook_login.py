@@ -1,5 +1,5 @@
-"""Script para automatizar el login en facebook mediante email y password.Busca si hay cookies. Hay que pasarle el driver ahora.
-Mas adelante se le agregara la parte de loguearse en gmail para verificar correo."""
+"""Script para automatizar el login en facebook mediante email y password.Busca si hay cookies.
+Hay que pasarle el driver ahora.Mas adelante se le agregara la parte de loguearse en gmail para verificar correo."""
 
 from datetime import datetime as dt
 import json,time,random,os
@@ -14,7 +14,6 @@ while 1:
     except:
         os.system('pip install selenium')
         os.system('pip install seleniumbase')
-
 
 def errors_screenshoter(driver):
 	"""Para guardar un screenshot del punto donde dio un error."""
@@ -31,30 +30,35 @@ def keys_sender(element,key):
         time.sleep(random.randint(1,5)/10)
         element.send_keys(letter)
 
+def save_cookies(driver):
+    """Funcion integrada para salvar cookies"""
+    with open('face_cookies.json','w') as file:
+        json.dump(driver.get_cookies(),file)
+
 def manual_login(email,password,driver,wait):
     """Para loguearse manual en el face con correo y password."""
     driver.get('https://www.facebook.com')
     
     #correo
     try:
-        correo_element = wait.until(ec.visibility_of_element_located((By.XPATH,'//input[@id="email"]')))
+        correo_element = wait.until(ec.visibility_of_element_located((By.XPATH,'//input[@name="email"]')))
     except TimeoutException:
         errors_screenshoter(driver)
         print('Algo fue mal al cargar el correo')
         return 'bad'
     keys_sender(correo_element,email)
     #password
-    pass_element = driver.find_element(By.XPATH,'//input[@id="pass"]')
+    pass_element = driver.find_element(By.XPATH,'//input[@name="pass"]')
     keys_sender(pass_element,password)
 
     #Boton de siguiente
     try:
-        wait.until(ec.element_to_be_clickable((By.XPATH,"//button[@name='login']"))).click()
+        wait.until(ec.element_to_be_clickable((By.XPATH,"//div[contains(@aria-label,'Iniciar')]"))).click()
     except TimeoutException:
         errors_screenshoter(driver)
         print('Algo fue mal al clickear el boton se siguiente.')
         return 'bad'
-    
+    breakpoint()
     #entrando a perfil
     try:    
         wait.until(ec.visibility_of_element_located((By.XPATH,'//div[@aria-label="Tu perfil"]')))
@@ -62,9 +66,6 @@ def manual_login(email,password,driver,wait):
         errors_screenshoter(driver)
         print('Algo fue mal al cargar el perfil.')
         return 'bad'
-    #salvando cookies
-    with open('face_cookies.json','w') as file:
-        json.dump(driver.get_cookies(),file)
     
     return driver
 
@@ -89,7 +90,7 @@ def login_face(email,password,driver,wait):
 if __name__ == '__main__':
     driver = Driver(uc=True)
     wait = WebDriverWait(driver,10)
-    driver = login_face('nelly550ruiz@gmail.com','Leon.990423',driver,wait)
+    res = login_face('nelly550ruiz@gmail.com','Leon.990423',driver,wait)
     driver.quit()
 
     
